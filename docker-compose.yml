@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  athena-mcp:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: "3000"
+    # Inject test credentials as default headers via a thin nginx proxy,
+    # OR just test by passing headers directly with curl / Claude Desktop.
+    # See .env.example for the variables you can set here for local smoke tests.
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
